@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Fruit Quality Analyzer</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+    <!-- MAIN CONTAINER -->
+
+    <div class="container">
+
+
+        <!-- ==============================
+             HEADER
+        =============================== -->
+
+        <div class="header">
+
+            <h1>🍎 Fruit Quality Analyzer</h1>
+
+            <p>
+                Upload a fruit image to analyze
+                its type and visual quality.
+            </p>
+
+        </div>
+
+
+        <!-- ==============================
+             UPLOAD CARD
+        =============================== -->
+
+        <div class="upload-card">
+
+            <h2>Upload Fruit Image</h2>
+
+            <p>
+                Select an image of a fruit
+                for AI-based analysis.
+            </p>
+
+
+            <!-- FILE INPUT -->
+
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+            >
+
+
+            <!-- IMAGE PREVIEW -->
+
+            <br>
+
+            <img
+                id="preview"
+                alt="Fruit Preview"
+                style="display: none;"
+            >
+
+
+            <!-- ANALYZE BUTTON -->
+
+            <br>
+
+            <button
+                id="analyzeButton"
+            >
+                Analyze Fruit
+            </button>
+
+        </div>
+
+
+        <!-- ==============================
+             RESULT SECTION
+        =============================== -->
+
+        <div id="result">
+
+            <h2>Analysis Result</h2>
+
+
+            <div class="result-grid">
+
+
+                <!-- FRUIT -->
+
+                <div class="result-card">
+
+                    <h3>🍎 Fruit</h3>
+
+                    <p id="fruit">-</p>
+
+                </div>
+
+
+                <!-- FRUIT CONFIDENCE -->
+
+                <div class="result-card">
+
+                    <h3>📊 Fruit Confidence</h3>
+
+                    <p id="fruitConfidence">-</p>
+
+                </div>
+
+
+                <!-- QUALITY -->
+
+                <div class="result-card">
+
+                    <h3>⭐ Visual Quality</h3>
+
+                    <p id="quality">-</p>
+
+                </div>
+
+
+                <!-- QUALITY CONFIDENCE -->
+
+                <div class="result-card">
+
+                    <h3>📈 Quality Confidence</h3>
+
+                    <p id="qualityConfidence">-</p>
+
+                </div>
+
+
+                <!-- CALORIES -->
+
+                <div class="result-card">
+
+                    <h3>🔥 Calories</h3>
+
+                    <p id="calories">-</p>
+
+                </div>
+
+
+                <!-- FIBER -->
+
+                <div class="result-card">
+
+                    <h3>🌾 Fiber</h3>
+
+                    <p id="fiber">-</p>
+
+                </div>
+
+
+                <!-- VITAMINS -->
+
+                <div class="result-card">
+
+                    <h3>💊 Vitamins</h3>
+
+                    <p id="vitamins">-</p>
+
+                </div>
+
+
+                <!-- REFERENCE PRICE -->
+
+                <div class="result-card">
+
+                    <h3>💰 Reference Price</h3>
+
+                    <p id="price">-</p>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ==============================
+         JAVASCRIPT
+    =============================== -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

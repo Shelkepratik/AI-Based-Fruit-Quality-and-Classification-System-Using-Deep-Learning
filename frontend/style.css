@@ -1,0 +1,173 @@
+/* ==============================
+   GENERAL
+   ============================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7f6;
+    color: #222;
+}
+
+
+/* ==============================
+   MAIN CONTAINER
+   ============================== */
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 40px auto;
+}
+
+
+/* ==============================
+   HEADER
+   ============================== */
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.header p {
+    color: #666;
+    font-size: 16px;
+}
+
+
+/* ==============================
+   UPLOAD CARD
+   ============================== */
+
+.upload-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ==============================
+   FILE INPUT
+   ============================== */
+
+input[type="file"] {
+    margin: 15px 0;
+}
+
+
+/* ==============================
+   IMAGE PREVIEW
+   ============================== */
+
+#preview {
+    max-width: 350px;
+    max-height: 300px;
+    margin: 20px auto;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+
+/* ==============================
+   BUTTON
+   ============================== */
+
+#analyzeButton {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    background: #2e7d32;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#analyzeButton:hover {
+    background: #1b5e20;
+}
+
+#analyzeButton:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
+
+/* ==============================
+   RESULT SECTION
+   ============================== */
+
+#result {
+    margin-top: 30px;
+}
+
+#result h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+/* ==============================
+   RESULT GRID
+   ============================== */
+
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+
+/* ==============================
+   RESULT CARD
+   ============================== */
+
+.result-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+}
+
+.result-card h3 {
+    margin-top: 0;
+    color: #555;
+    font-size: 15px;
+}
+
+.result-card p {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+
+/* ==============================
+   MOBILE
+   ============================== */
+
+@media (max-width: 600px) {
+
+    .header h1 {
+        font-size: 28px;
+    }
+
+    .result-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .upload-card {
+        padding: 20px;
+    }
+}
