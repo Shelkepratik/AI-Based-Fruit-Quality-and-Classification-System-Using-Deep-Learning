@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+import cv2
 
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File
@@ -8,6 +9,7 @@ from io import BytesIO
 
 
 app = FastAPI()
+
 
 # ==============================
 # CORS
@@ -20,6 +22,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
+
 # ==============================
 # LOAD MODELS
 # ==============================
@@ -56,6 +60,7 @@ quality_classes = [
 # ==============================
 
 fruit_info = {
+
     "apple": {
         "name": "Apple",
         "calories": "52 kcal",
@@ -96,6 +101,7 @@ fruit_info = {
 
 @app.get("/")
 def home():
+
     return {
         "message": "Fruit Quality Analyzer API is running!"
     }
@@ -108,7 +114,10 @@ def home():
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
 
-    # Read uploaded image
+    # ==============================
+    # READ UPLOADED IMAGE
+    # ==============================
+
     image_data = await file.read()
 
     image = Image.open(
@@ -116,17 +125,66 @@ async def predict(file: UploadFile = File(...)):
     ).convert("RGB")
 
 
-    # Resize image
-    image = image.resize(
+    # Convert PIL image to NumPy
+    image_array = np.array(image)
+
+
+    # ==================================================
+    # SHAPE PROCESSING FOR FRUIT CLASSIFICATION
+    # ==================================================
+
+    # Convert RGB image to grayscale
+    gray_image = cv2.cvtColor(
+        image_array,
+        cv2.COLOR_RGB2GRAY
+    )
+
+
+    # Detect edges
+    shape_image = cv2.Canny(
+        gray_image,
+        100,
+        200
+    )
+
+
+    # Resize to model input size
+    shape_image = cv2.resize(
+        shape_image,
         (128, 128)
     )
 
 
-    # Convert image to NumPy array
-    image_array = np.array(image)
+    # Add channel dimension
+    # (128,128) → (128,128,1)
+    shape_image = np.expand_dims(
+        shape_image,
+        axis=-1
+    )
 
-    image_array = np.expand_dims(
+
+    # Add batch dimension
+    # (128,128,1) → (1,128,128,1)
+    shape_image = np.expand_dims(
+        shape_image,
+        axis=0
+    )
+
+
+    # ==================================================
+    # RGB PROCESSING FOR QUALITY CLASSIFICATION
+    # ==================================================
+
+    rgb_image = cv2.resize(
         image_array,
+        (128, 128)
+    )
+
+
+    # Add batch dimension
+    # (128,128,3) → (1,128,128,3)
+    rgb_image = np.expand_dims(
+        rgb_image,
         axis=0
     )
 
@@ -136,15 +194,20 @@ async def predict(file: UploadFile = File(...)):
     # ==============================
 
     fruit_prediction = fruit_model.predict(
-        image_array,
+        shape_image,
         verbose=0
     )
+
 
     fruit_index = np.argmax(
         fruit_prediction[0]
     )
 
-    fruit = fruit_classes[fruit_index]
+
+    fruit = fruit_classes[
+        fruit_index
+    ]
+
 
     fruit_confidence = float(
         fruit_prediction[0][fruit_index] * 100
@@ -156,15 +219,20 @@ async def predict(file: UploadFile = File(...)):
     # ==============================
 
     quality_prediction = quality_model.predict(
-        image_array,
+        rgb_image,
         verbose=0
     )
+
 
     quality_index = np.argmax(
         quality_prediction[0]
     )
 
-    quality = quality_classes[quality_index]
+
+    quality = quality_classes[
+        quality_index
+    ]
+
 
     quality_confidence = float(
         quality_prediction[0][quality_index] * 100
@@ -175,7 +243,9 @@ async def predict(file: UploadFile = File(...)):
     # GET FRUIT INFORMATION
     # ==============================
 
-    info = fruit_info[fruit]
+    info = fruit_info[
+        fruit
+    ]
 
 
     # ==============================
@@ -183,12 +253,26 @@ async def predict(file: UploadFile = File(...)):
     # ==============================
 
     return {
+
         "fruit": info["name"],
-        "fruit_confidence": round(fruit_confidence, 2),
+
+        "fruit_confidence": round(
+            fruit_confidence,
+            2
+        ),
+
         "quality": quality,
-        "quality_confidence": round(quality_confidence, 2),
+
+        "quality_confidence": round(
+            quality_confidence,
+            2
+        ),
+
         "calories": info["calories"],
+
         "fiber": info["fiber"],
+
         "vitamins": info["vitamins"],
+
         "reference_price": info["reference_price"]
     }
