@@ -1,6 +1,5 @@
 import tensorflow as tf
 import numpy as np
-import cv2
 
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File
@@ -8,12 +7,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from io import BytesIO
 
 
-app = FastAPI()
+# ==================================================
+# CREATE FASTAPI APP
+# ==================================================
+
+app = FastAPI(
+    title="Fruit Quality Analyzer API",
+    description="AI-based Fruit Classification and Visual Quality Assessment",
+    version="1.0"
+)
 
 
-# ==============================
+# ==================================================
 # CORS
-# ==============================
+# ==================================================
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,28 +31,34 @@ app.add_middleware(
 )
 
 
-# ==============================
-# LOAD MODELS
-# ==============================
+# ==================================================
+# LOAD FRUIT MODEL
+# ==================================================
 
 fruit_model = tf.keras.models.load_model(
-    "../models/fruit_classifier.keras"
+    "../models/mobile_fruit_unknown_classifier.keras"
 )
+
+
+# ==================================================
+# LOAD QUALITY MODEL
+# ==================================================
 
 quality_model = tf.keras.models.load_model(
     "../models/quality_classifier.keras"
 )
 
 
-# ==============================
+# ==================================================
 # CLASS NAMES
-# ==============================
+# ==================================================
 
 fruit_classes = [
     "apple",
     "banana",
     "mango",
-    "orange"
+    "orange",
+    "unknown"
 ]
 
 quality_classes = [
@@ -55,9 +68,9 @@ quality_classes = [
 ]
 
 
-# ==============================
+# ==================================================
 # FRUIT INFORMATION
-# ==============================
+# ==================================================
 
 fruit_info = {
 
@@ -66,7 +79,7 @@ fruit_info = {
         "calories": "52 kcal",
         "fiber": "2.4 g",
         "vitamins": "Vitamin C, Vitamin K",
-        "reference_price": "₹120 per kg"
+        "reference_price": 120
     },
 
     "banana": {
@@ -74,7 +87,7 @@ fruit_info = {
         "calories": "89 kcal",
         "fiber": "2.6 g",
         "vitamins": "Vitamin B6, Vitamin C",
-        "reference_price": "₹60 per kg"
+        "reference_price": 60
     },
 
     "mango": {
@@ -82,7 +95,7 @@ fruit_info = {
         "calories": "60 kcal",
         "fiber": "1.6 g",
         "vitamins": "Vitamin A, Vitamin C",
-        "reference_price": "₹100 per kg"
+        "reference_price": 100
     },
 
     "orange": {
@@ -90,33 +103,39 @@ fruit_info = {
         "calories": "47 kcal",
         "fiber": "2.4 g",
         "vitamins": "Vitamin C, Folate",
-        "reference_price": "₹80 per kg"
+        "reference_price": 80
     }
 }
 
 
-# ==============================
+# ==================================================
 # HOME API
-# ==============================
+# ==================================================
 
 @app.get("/")
 def home():
 
     return {
-        "message": "Fruit Quality Analyzer API is running!"
+        "message": "Fruit Quality Analyzer API is running!",
+        "fruit_model": "MobileNetV2 - 5 Classes",
+        "fruit_classes": fruit_classes,
+        "fruit_input_size": "160x160 RGB",
+        "quality_input_size": "128x128 RGB"
     }
 
 
-# ==============================
+# ==================================================
 # PREDICTION API
-# ==============================
+# ==================================================
 
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)):
+async def predict(
+    file: UploadFile = File(...)
+):
 
-    # ==============================
-    # READ UPLOADED IMAGE
-    # ==============================
+    # ==================================================
+    # READ IMAGE
+    # ==================================================
 
     image_data = await file.read()
 
@@ -125,82 +144,38 @@ async def predict(file: UploadFile = File(...)):
     ).convert("RGB")
 
 
-    # Convert PIL image to NumPy
-    image_array = np.array(image)
-
-
     # ==================================================
-    # SHAPE PROCESSING FOR FRUIT CLASSIFICATION
+    # FRUIT CLASSIFICATION
     # ==================================================
 
-    # Convert RGB image to grayscale
-    gray_image = cv2.cvtColor(
-        image_array,
-        cv2.COLOR_RGB2GRAY
+    fruit_image = image.resize(
+        (160, 160)
     )
 
-
-    # Detect edges
-    shape_image = cv2.Canny(
-        gray_image,
-        100,
-        200
+    fruit_image_array = np.array(
+        fruit_image
     )
 
-
-    # Resize to model input size
-    shape_image = cv2.resize(
-        shape_image,
-        (128, 128)
-    )
-
-
-    # Add channel dimension
-    # (128,128) → (128,128,1)
-    shape_image = np.expand_dims(
-        shape_image,
-        axis=-1
-    )
-
-
-    # Add batch dimension
-    # (128,128,1) → (1,128,128,1)
-    shape_image = np.expand_dims(
-        shape_image,
+    fruit_image_array = np.expand_dims(
+        fruit_image_array,
         axis=0
     )
 
 
     # ==================================================
-    # RGB PROCESSING FOR QUALITY CLASSIFICATION
-    # ==================================================
-
-    rgb_image = cv2.resize(
-        image_array,
-        (128, 128)
-    )
-
-
-    # Add batch dimension
-    # (128,128,3) → (1,128,128,3)
-    rgb_image = np.expand_dims(
-        rgb_image,
-        axis=0
-    )
-
-
-    # ==============================
     # FRUIT PREDICTION
-    # ==============================
+    # ==================================================
 
     fruit_prediction = fruit_model.predict(
-        shape_image,
+        fruit_image_array,
         verbose=0
     )
 
 
-    fruit_index = np.argmax(
-        fruit_prediction[0]
+    fruit_index = int(
+        np.argmax(
+            fruit_prediction[0]
+        )
     )
 
 
@@ -214,18 +189,69 @@ async def predict(file: UploadFile = File(...)):
     )
 
 
-    # ==============================
+    # ==================================================
+    # UNKNOWN FRUIT CHECK
+    # ==================================================
+
+    if fruit == "unknown":
+
+        return {
+
+            "fruit": "Unknown Fruit",
+
+            "fruit_confidence": round(
+                fruit_confidence,
+                2
+            ),
+
+            "quality": "Not Available",
+
+            "quality_confidence": 0,
+
+            "calories": "Not Available",
+
+            "fiber": "Not Available",
+
+            "vitamins": "Not Available",
+
+            "reference_price": "Not Available",
+
+            "message": "The uploaded image does not appear to be one of the supported fruits."
+        }
+
+
+    # ==================================================
+    # QUALITY CLASSIFICATION
+    # ==================================================
+
+    quality_image = image.resize(
+        (128, 128)
+    )
+
+    quality_image_array = np.array(
+        quality_image
+    )
+
+    quality_image_array = np.expand_dims(
+        quality_image_array,
+        axis=0
+    )
+
+
+    # ==================================================
     # QUALITY PREDICTION
-    # ==============================
+    # ==================================================
 
     quality_prediction = quality_model.predict(
-        rgb_image,
+        quality_image_array,
         verbose=0
     )
 
 
-    quality_index = np.argmax(
-        quality_prediction[0]
+    quality_index = int(
+        np.argmax(
+            quality_prediction[0]
+        )
     )
 
 
@@ -239,18 +265,45 @@ async def predict(file: UploadFile = File(...)):
     )
 
 
-    # ==============================
+    # ==================================================
     # GET FRUIT INFORMATION
-    # ==============================
+    # ==================================================
 
     info = fruit_info[
         fruit
     ]
 
 
-    # ==============================
+    # ==================================================
+    # QUALITY BASED PRICE
+    # ==================================================
+
+    base_price = info["reference_price"]
+
+
+    if quality.lower() == "good":
+
+        final_price = base_price
+
+    elif quality.lower() == "average":
+
+        final_price = base_price * 0.70
+
+    else:
+
+        final_price = 0
+
+
+    # ==================================================
+    # FORMAT PRICE
+    # ==================================================
+
+    final_price = f"₹{final_price:.0f} per kg"
+
+
+    # ==================================================
     # RETURN RESULT
-    # ==============================
+    # ==================================================
 
     return {
 
@@ -274,5 +327,5 @@ async def predict(file: UploadFile = File(...)):
 
         "vitamins": info["vitamins"],
 
-        "reference_price": info["reference_price"]
+        "reference_price": final_price
     }

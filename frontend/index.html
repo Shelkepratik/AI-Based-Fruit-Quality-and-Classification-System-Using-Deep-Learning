@@ -8,197 +8,909 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Fruit Quality Analyzer</title>
+    <title>
+        FruitAI | Intelligent Fruit Quality Analyzer
+    </title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+          href="style.css">
 
 </head>
 
 
 <body>
 
-    <!-- MAIN CONTAINER -->
 
-    <div class="container">
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        🍎 Fruit<span>AI</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="#dashboard">
+            Dashboard
+        </a>
+
+        <a href="#analysis">
+            Analysis
+        </a>
+
+        <a href="#health">
+            Health
+        </a>
+
+        <a href="#nutrition">
+            Nutrition
+        </a>
+
+        <a href="#about">
+            About
+        </a>
+
+    </div>
+
+    <button id="themeButton"
+            class="theme-button">
+        🌙
+    </button>
+
+</nav>
 
 
-        <!-- ==============================
-             HEADER
-        =============================== -->
 
-        <div class="header">
+<!-- =====================================================
+     HERO
+===================================================== -->
 
-            <h1>🍎 Fruit Quality Analyzer</h1>
+<section id="dashboard"
+         class="hero">
+
+    <div class="hero-glow"></div>
+
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            🤖 AI POWERED • DEEP LEARNING
+        </div>
+
+        <h1>
+            Intelligent
+            <span>Fruit Quality</span>
+            Analyzer
+        </h1>
+
+        <p>
+
+            Identify fruits using Deep Learning,
+            evaluate visible visual quality,
+            and explore nutritional and health information.
+
+        </p>
+
+
+        <div class="hero-features">
+
+            <div class="hero-feature">
+                <span>🍎</span>
+                <b>Fruit Detection</b>
+            </div>
+
+            <div class="hero-feature">
+                <span>⭐</span>
+                <b>Quality Assessment</b>
+            </div>
+
+            <div class="hero-feature">
+                <span>❤️</span>
+                <b>Health Insights</b>
+            </div>
+
+            <div class="hero-feature">
+                <span>🧠</span>
+                <b>AI Analysis</b>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="dashboard-container">
+
+
+<!-- =====================================================
+     UPLOAD SECTION
+===================================================== -->
+
+<section class="main-card"
+         id="uploadSection">
+
+    <div class="section-heading">
+
+        <div>
+
+            <span class="step">
+                STEP 01
+            </span>
+
+            <h2>
+                Upload Fruit Image
+            </h2>
 
             <p>
-                Upload a fruit image to analyze
-                its type and visual quality.
+                Select a clear fruit image for AI analysis.
             </p>
 
         </div>
 
+        <div class="section-icon">
+            📤
+        </div>
 
-        <!-- ==============================
-             UPLOAD CARD
-        =============================== -->
+    </div>
 
-        <div class="upload-card">
 
-            <h2>Upload Fruit Image</h2>
+    <!-- UPLOAD AREA -->
+
+    <div class="upload-area"
+         id="uploadArea">
+
+
+        <!-- DEFAULT PLACEHOLDER -->
+
+        <div id="uploadPlaceholder"
+             class="upload-placeholder">
+
+            <div class="camera-icon">
+                📸
+            </div>
+
+            <h3>
+                Select Fruit Image
+            </h3>
 
             <p>
-                Select an image of a fruit
-                for AI-based analysis.
+                JPG, JPEG or PNG
             </p>
 
-
-            <!-- FILE INPUT -->
-
-            <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-            >
-
-
-            <!-- IMAGE PREVIEW -->
-
-            <br>
-
-            <img
-                id="preview"
-                alt="Fruit Preview"
-                style="display: none;"
-            >
-
-
-            <!-- ANALYZE BUTTON -->
-
-            <br>
-
-            <button
-                id="analyzeButton"
-            >
-                Analyze Fruit
-            </button>
+            <span>
+                AI-powered image analysis
+            </span>
 
         </div>
 
 
-        <!-- ==============================
-             RESULT SECTION
-        =============================== -->
+        <!-- FILE INPUT -->
 
-        <div id="result">
-
-            <h2>Analysis Result</h2>
+        <input type="file"
+               id="imageInput"
+               accept="image/jpeg,image/jpg,image/png">
 
 
-            <div class="result-grid">
+        <!-- CUSTOM BUTTON -->
+
+        <label for="imageInput"
+               class="choose-image-button">
+
+            📁 Choose Fruit Image
+
+        </label>
 
 
-                <!-- FRUIT -->
+        <!-- IMAGE PREVIEW -->
 
-                <div class="result-card">
+        <div id="imagePreviewContainer"
+             class="image-preview-container">
 
-                    <h3>🍎 Fruit</h3>
 
-                    <p id="fruit">-</p>
+            <div class="preview-header">
 
+                <span>
+                    🖼️ Selected Fruit Image
+                </span>
+
+                <button id="removeImage"
+                        class="remove-image">
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="image-wrapper">
+
+                <img id="preview"
+                     alt="Selected Fruit Image">
+
+                <div class="scan-line"></div>
+
+                <div class="corner corner-tl"></div>
+                <div class="corner corner-tr"></div>
+                <div class="corner corner-bl"></div>
+                <div class="corner corner-br"></div>
+
+                <div class="image-ai-label">
+                    🤖 AI READY
                 </div>
 
-
-                <!-- FRUIT CONFIDENCE -->
-
-                <div class="result-card">
-
-                    <h3>📊 Fruit Confidence</h3>
-
-                    <p id="fruitConfidence">-</p>
-
-                </div>
+            </div>
 
 
-                <!-- QUALITY -->
+            <div class="image-info">
 
-                <div class="result-card">
+                <span id="fileName">
+                    Image selected
+                </span>
 
-                    <h3>⭐ Visual Quality</h3>
-
-                    <p id="quality">-</p>
-
-                </div>
-
-
-                <!-- QUALITY CONFIDENCE -->
-
-                <div class="result-card">
-
-                    <h3>📈 Quality Confidence</h3>
-
-                    <p id="qualityConfidence">-</p>
-
-                </div>
-
-
-                <!-- CALORIES -->
-
-                <div class="result-card">
-
-                    <h3>🔥 Calories</h3>
-
-                    <p id="calories">-</p>
-
-                </div>
-
-
-                <!-- FIBER -->
-
-                <div class="result-card">
-
-                    <h3>🌾 Fiber</h3>
-
-                    <p id="fiber">-</p>
-
-                </div>
-
-
-                <!-- VITAMINS -->
-
-                <div class="result-card">
-
-                    <h3>💊 Vitamins</h3>
-
-                    <p id="vitamins">-</p>
-
-                </div>
-
-
-                <!-- REFERENCE PRICE -->
-
-                <div class="result-card">
-
-                    <h3>💰 Reference Price</h3>
-
-                    <p id="price">-</p>
-
-                </div>
-
+                <span id="fileSize">
+                    Ready for analysis
+                </span>
 
             </div>
 
         </div>
 
 
+        <!-- ANALYZE BUTTON -->
+
+        <button id="analyzeButton"
+                class="analyze-button">
+
+            <span id="analyzeIcon">
+                🤖
+            </span>
+
+            <span id="analyzeText">
+                Analyze Fruit
+            </span>
+
+        </button>
+
+
+        <!-- RESET -->
+
+        <button id="resetButton"
+                class="reset-button">
+
+            ↻ Reset Analysis
+
+        </button>
+
+
+        <!-- STATUS -->
+
+        <div id="loadingStatus"
+             class="loading-status">
+
+            <div class="spinner"></div>
+
+            <span>
+                AI is analyzing your fruit...
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     ANALYSIS RESULT
+===================================================== -->
+
+<section id="analysis"
+         class="main-card">
+
+    <div class="section-heading">
+
+        <div>
+
+            <span class="step">
+                STEP 02
+            </span>
+
+            <h2>
+                AI Analysis Result
+            </h2>
+
+            <p>
+                Deep learning based fruit classification
+                and visual quality assessment.
+            </p>
+
+        </div>
+
+        <div class="section-icon">
+            📊
+        </div>
+
     </div>
 
 
-    <!-- ==============================
-         JAVASCRIPT
-    =============================== -->
+    <div class="result-grid">
 
-    <script src="script.js"></script>
+
+        <!-- FRUIT -->
+
+        <div class="result-card">
+
+            <div class="card-title">
+                🍎 Fruit
+            </div>
+
+            <div id="fruit"
+                 class="big-value">
+                —
+            </div>
+
+            <div class="small-description">
+                Detected fruit
+            </div>
+
+        </div>
+
+
+        <!-- FRUIT CONFIDENCE -->
+
+        <div class="result-card">
+
+            <div class="card-title">
+                📊 Fruit Confidence
+            </div>
+
+            <div id="fruitConfidence"
+                 class="big-value">
+                —
+            </div>
+
+            <div class="progress">
+
+                <div id="fruitProgress"
+                     class="progress-bar">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUALITY -->
+
+        <div class="result-card">
+
+            <div class="card-title">
+                ⭐ Visual Quality
+            </div>
+
+            <div id="quality"
+                 class="quality-badge">
+                —
+            </div>
+
+            <div class="small-description">
+                Image-based quality assessment
+            </div>
+
+        </div>
+
+
+        <!-- QUALITY CONFIDENCE -->
+
+        <div class="result-card">
+
+            <div class="card-title">
+                📈 Quality Confidence
+            </div>
+
+            <div id="qualityConfidence"
+                 class="big-value">
+                —
+            </div>
+
+            <div class="progress">
+
+                <div id="qualityProgress"
+                     class="progress-bar">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CALORIES -->
+
+        <div class="result-card">
+
+            <div class="card-title">
+                🔥 Calories
+            </div>
+
+            <div id="calories"
+                 class="big-value">
+                —
+            </div>
+
+            <div class="small-description">
+                Approx. per 100 g
+            </div>
+
+        </div>
+
+
+        <!-- FIBER -->
+
+        <div class="result-card">
+
+            <div class="card-title">
+                🌿 Dietary Fiber
+            </div>
+
+            <div id="fiber"
+                 class="big-value">
+                —
+            </div>
+
+            <div class="small-description">
+                Approx. per 100 g
+            </div>
+
+        </div>
+
+
+        <!-- VITAMINS -->
+
+        <div class="result-card">
+
+            <div class="card-title">
+                💊 Vitamins
+            </div>
+
+            <div id="vitamins"
+                 class="big-value">
+                —
+            </div>
+
+        </div>
+
+
+        <!-- PRICE -->
+
+        <div class="result-card">
+
+            <div class="card-title">
+                💰 Reference Price
+            </div>
+
+            <div id="price"
+                 class="big-value">
+                —
+            </div>
+
+            <div class="small-description">
+                Reference/demo market value
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     HEALTH BENEFITS
+===================================================== -->
+
+<section id="health"
+         class="main-card">
+
+    <div class="section-heading">
+
+        <div>
+
+            <span class="step">
+                STEP 03
+            </span>
+
+            <h2>
+                Health Benefits
+            </h2>
+
+            <p>
+                General nutritional benefits of the
+                detected fruit.
+            </p>
+
+        </div>
+
+        <div class="section-icon">
+            ❤️
+        </div>
+
+    </div>
+
+
+    <div id="benefitsContainer"
+         class="benefits-grid">
+
+
+        <div class="benefit-card">
+
+            <div class="benefit-icon">
+                🍎
+            </div>
+
+            <h3>
+                Waiting for Analysis
+            </h3>
+
+            <p>
+                Upload and analyze a fruit image
+                to view health benefits.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     HEALTH SUMMARY
+===================================================== -->
+
+<section class="health-summary">
+
+    <div class="summary-content">
+
+        <div class="summary-icon">
+            💚
+        </div>
+
+        <div>
+
+            <span class="summary-label">
+                HEALTH INSIGHT
+            </span>
+
+            <h2>
+                Why is this fruit beneficial?
+            </h2>
+
+            <p id="healthSummary">
+
+                Analyze a fruit to see
+                nutritional and health information.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     NUTRITION
+===================================================== -->
+
+<section id="nutrition"
+         class="main-card">
+
+    <div class="section-heading">
+
+        <div>
+
+            <span class="step">
+                STEP 04
+            </span>
+
+            <h2>
+                Nutrition Overview
+            </h2>
+
+            <p>
+                Important nutritional information
+                associated with the detected fruit.
+            </p>
+
+        </div>
+
+        <div class="section-icon">
+            🥗
+        </div>
+
+    </div>
+
+
+    <div class="nutrition-grid">
+
+
+        <div class="nutrition-card">
+
+            <span>
+                🔥
+            </span>
+
+            <h3>
+                Calories
+            </h3>
+
+            <strong id="nutritionCalories">
+                —
+            </strong>
+
+        </div>
+
+
+        <div class="nutrition-card">
+
+            <span>
+                🌿
+            </span>
+
+            <h3>
+                Dietary Fiber
+            </h3>
+
+            <strong id="nutritionFiber">
+                —
+            </strong>
+
+        </div>
+
+
+        <div class="nutrition-card">
+
+            <span>
+                💊
+            </span>
+
+            <h3>
+                Vitamins
+            </h3>
+
+            <strong id="nutritionVitamins">
+                —
+            </strong>
+
+        </div>
+
+
+        <div class="nutrition-card">
+
+            <span>
+                💰
+            </span>
+
+            <h3>
+                Reference Price
+            </h3>
+
+            <strong id="nutritionPrice">
+                —
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     SMART TIPS
+===================================================== -->
+
+<section class="tips-section">
+
+    <div class="tips-card">
+
+        <div class="tips-icon">
+            💡
+        </div>
+
+        <div>
+
+            <span class="summary-label">
+                SMART INFORMATION
+            </span>
+
+            <h2>
+                Smart Consumption Tips
+            </h2>
+
+            <ul id="tipsList">
+
+                <li>
+                    Wash fruits properly before consumption.
+                </li>
+
+                <li>
+                    Prefer fresh and properly stored fruits.
+                </li>
+
+                <li>
+                    Avoid visibly spoiled or moldy fruit.
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     AI SUMMARY
+===================================================== -->
+
+<section class="ai-summary">
+
+    <div class="ai-header">
+
+        <div class="ai-icon">
+            🤖
+        </div>
+
+        <div>
+
+            <span class="summary-label">
+                ARTIFICIAL INTELLIGENCE
+            </span>
+
+            <h2>
+                AI Analysis Summary
+            </h2>
+
+            <p>
+                Deep learning based visual analysis
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div id="aiMessage"
+         class="ai-message">
+
+        Upload a fruit image and click
+        <strong>Analyze Fruit</strong>
+        to generate an AI analysis.
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     ABOUT
+===================================================== -->
+
+<section id="about"
+         class="main-card">
+
+    <div class="about-card">
+
+        <div class="about-icon">
+            🧠
+        </div>
+
+        <span class="summary-label">
+            MCA ACADEMIC PROJECT
+        </span>
+
+        <h2>
+            About FruitAI
+        </h2>
+
+        <p>
+
+            Fruit Quality Analyzer is a deep-learning
+            based system developed for automatic fruit
+            classification and image-based visual quality
+            assessment.
+
+        </p>
+
+
+        <div class="technology-tags">
+
+            <span>Python</span>
+            <span>TensorFlow</span>
+            <span>MobileNetV2</span>
+            <span>FastAPI</span>
+            <span>OpenCV</span>
+            <span>HTML5</span>
+            <span>CSS3</span>
+            <span>JavaScript</span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     DISCLAIMER
+===================================================== -->
+
+<section class="disclaimer">
+
+    <strong>
+        ⚠️ Research Disclaimer
+    </strong>
+
+    <p>
+
+        This system performs image-based fruit
+        classification and visual quality assessment.
+        It does not diagnose diseases, determine internal
+        freshness, detect pesticide residue, or guarantee
+        food safety from an image alone.
+
+    </p>
+
+</section>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <div class="footer-logo">
+        🍎 Fruit<span>AI</span>
+    </div>
+
+    <p>
+        Deep Learning Based Fruit Classification
+        & Visual Quality Assessment System
+    </p>
+
+    <p class="copyright">
+        MCA Academic Project • 2026
+    </p>
+
+</footer>
+
+
+
+<script src="script.js"></script>
 
 </body>
 
