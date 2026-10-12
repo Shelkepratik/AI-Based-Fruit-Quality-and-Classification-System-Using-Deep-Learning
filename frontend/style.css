@@ -2387,3 +2387,14 @@ body.light-mode .ai-message {
     }
 
 }
+
+/* =====================================================
+   AI RECOMMENDATION
+===================================================== */
+
+.recommendation-value {
+    font-size: 20px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+

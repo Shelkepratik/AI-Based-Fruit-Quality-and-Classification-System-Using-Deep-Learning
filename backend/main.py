@@ -116,11 +116,22 @@ fruit_info = {
 def home():
 
     return {
-        "message": "Fruit Quality Analyzer API is running!",
-        "fruit_model": "MobileNetV2 - 5 Classes",
-        "fruit_classes": fruit_classes,
-        "fruit_input_size": "160x160 RGB",
-        "quality_input_size": "128x128 RGB"
+
+        "message":
+            "Fruit Quality Analyzer API is running!",
+
+        "fruit_model":
+            "MobileNetV2 - 5 Classes",
+
+        "fruit_classes":
+            fruit_classes,
+
+        "fruit_input_size":
+            "160x160 RGB",
+
+        "quality_input_size":
+            "128x128 RGB"
+
     }
 
 
@@ -145,7 +156,7 @@ async def predict(
 
 
     # ==================================================
-    # FRUIT CLASSIFICATION
+    # FRUIT IMAGE PREPARATION
     # ==================================================
 
     fruit_image = image.resize(
@@ -197,31 +208,47 @@ async def predict(
 
         return {
 
-            "fruit": "Unknown Fruit",
+            "fruit":
+                "Unknown Fruit",
 
-            "fruit_confidence": round(
-                fruit_confidence,
-                2
-            ),
+            "fruit_confidence":
+                round(
+                    fruit_confidence,
+                    2
+                ),
 
-            "quality": "Not Available",
+            "quality":
+                "Not Available",
 
-            "quality_confidence": 0,
+            "quality_confidence":
+                0,
 
-            "calories": "Not Available",
+            "defect_status":
+                "Not Available",
 
-            "fiber": "Not Available",
+            "recommendation":
+                "Unable to provide recommendation",
 
-            "vitamins": "Not Available",
+            "calories":
+                "Not Available",
 
-            "reference_price": "Not Available",
+            "fiber":
+                "Not Available",
 
-            "message": "The uploaded image does not appear to be one of the supported fruits."
+            "vitamins":
+                "Not Available",
+
+            "reference_price":
+                "Not Available",
+
+            "message":
+                "The uploaded image does not appear to be one of the supported fruits."
+
         }
 
 
     # ==================================================
-    # QUALITY CLASSIFICATION
+    # QUALITY IMAGE PREPARATION
     # ==================================================
 
     quality_image = image.resize(
@@ -266,6 +293,52 @@ async def predict(
 
 
     # ==================================================
+    # VISUAL DEFECT SEVERITY
+    # ==================================================
+
+    if quality.lower() == "good":
+
+        defect_status = "Healthy"
+
+    elif quality.lower() == "average":
+
+        defect_status = "Minor Defect"
+
+    else:
+
+        defect_status = "Major Defect"
+
+
+    # ==================================================
+    # AI CONSUMPTION RECOMMENDATION
+    # ==================================================
+
+    if defect_status == "Healthy":
+
+        recommendation = (
+            "Suitable for consumption"
+        )
+
+    elif defect_status == "Minor Defect":
+
+        recommendation = (
+            "Inspect carefully before consumption"
+        )
+
+    elif defect_status == "Major Defect":
+
+        recommendation = (
+            "Not recommended for consumption"
+        )
+
+    else:
+
+        recommendation = (
+            "Unable to provide recommendation"
+        )
+
+
+    # ==================================================
     # GET FRUIT INFORMATION
     # ==================================================
 
@@ -278,7 +351,9 @@ async def predict(
     # QUALITY BASED PRICE
     # ==================================================
 
-    base_price = info["reference_price"]
+    base_price = info[
+        "reference_price"
+    ]
 
 
     if quality.lower() == "good":
@@ -298,7 +373,9 @@ async def predict(
     # FORMAT PRICE
     # ==================================================
 
-    final_price = f"₹{final_price:.0f} per kg"
+    final_price = (
+        f"₹{final_price:.0f} per kg"
+    )
 
 
     # ==================================================
@@ -307,25 +384,40 @@ async def predict(
 
     return {
 
-        "fruit": info["name"],
+        "fruit":
+            info["name"],
 
-        "fruit_confidence": round(
-            fruit_confidence,
-            2
-        ),
+        "fruit_confidence":
+            round(
+                fruit_confidence,
+                2
+            ),
 
-        "quality": quality,
+        "quality":
+            quality,
 
-        "quality_confidence": round(
-            quality_confidence,
-            2
-        ),
+        "quality_confidence":
+            round(
+                quality_confidence,
+                2
+            ),
 
-        "calories": info["calories"],
+        "defect_status":
+            defect_status,
 
-        "fiber": info["fiber"],
+        "recommendation":
+            recommendation,
 
-        "vitamins": info["vitamins"],
+        "calories":
+            info["calories"],
 
-        "reference_price": final_price
+        "fiber":
+            info["fiber"],
+
+        "vitamins":
+            info["vitamins"],
+
+        "reference_price":
+            final_price
+
     }

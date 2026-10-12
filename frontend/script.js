@@ -287,7 +287,7 @@ const fruitData = {
 
 
 /* =====================================================
-   FILE SIZE FORMAT
+   FILE SIZE
 ===================================================== */
 
 function formatFileSize(bytes) {
@@ -333,8 +333,6 @@ imageInput.addEventListener(
         }
 
 
-        /* Validate */
-
         const allowedTypes = [
 
             "image/jpeg",
@@ -361,8 +359,6 @@ imageInput.addEventListener(
         }
 
 
-        /* File size */
-
         if (
             file.size >
             10 * 1024 * 1024
@@ -378,12 +374,6 @@ imageInput.addEventListener(
 
         }
 
-
-        /*
-         IMPORTANT:
-         FileReader is used instead of
-         URL.createObjectURL().
-        */
 
         const reader =
             new FileReader();
@@ -420,17 +410,6 @@ imageInput.addEventListener(
 
                 resetButton.style.display =
                     "block";
-
-
-                /* Restart animation */
-
-                preview.style.animation =
-                    "none";
-
-                void preview.offsetWidth;
-
-                preview.style.animation =
-                    "imageAppear 0.8s ease";
 
             };
 
@@ -494,13 +473,12 @@ function clearImage() {
 
 
 /* =====================================================
-   ANALYZE BUTTON
+   ANALYZE FRUIT
 ===================================================== */
 
 analyzeButton.addEventListener(
     "click",
     async function () {
-
 
         const file =
             imageInput.files[0];
@@ -517,10 +495,9 @@ analyzeButton.addEventListener(
         }
 
 
-        /* Form Data */
-
         const formData =
             new FormData();
+
 
         formData.append(
             "file",
@@ -528,15 +505,15 @@ analyzeButton.addEventListener(
         );
 
 
-        /* Loading */
-
         analyzeButton.disabled =
             true;
+
 
         document.getElementById(
             "analyzeText"
         ).innerText =
             "Analyzing...";
+
 
         document.getElementById(
             "analyzeIcon"
@@ -549,11 +526,6 @@ analyzeButton.addEventListener(
 
 
         try {
-
-
-            /*
-             FastAPI backend
-            */
 
             const response =
                 await fetch(
@@ -580,9 +552,8 @@ analyzeButton.addEventListener(
 
 
             /* =================================================
-               RESULT
+               FRUIT
             ================================================= */
-
 
             document.getElementById(
                 "fruit"
@@ -597,6 +568,10 @@ analyzeButton.addEventListener(
                 + "%";
 
 
+            /* =================================================
+               QUALITY
+            ================================================= */
+
             document.getElementById(
                 "quality"
             ).innerText =
@@ -609,6 +584,30 @@ analyzeButton.addEventListener(
                 data.quality_confidence
                 + "%";
 
+
+            /* =================================================
+               VISUAL DEFECT STATUS
+            ================================================= */
+
+            document.getElementById(
+                "defectStatus"
+            ).innerText =
+                data.defect_status;
+
+
+            /* =================================================
+               AI CONSUMPTION RECOMMENDATION
+            ================================================= */
+
+            document.getElementById(
+                "recommendation"
+            ).innerText =
+                data.recommendation;
+
+
+            /* =================================================
+               NUTRITION
+            ================================================= */
 
             document.getElementById(
                 "calories"
@@ -638,7 +637,6 @@ analyzeButton.addEventListener(
                PROGRESS BARS
             ================================================= */
 
-
             document.getElementById(
                 "fruitProgress"
             ).style.width =
@@ -654,9 +652,8 @@ analyzeButton.addEventListener(
 
 
             /* =================================================
-               NUTRITION
+               NUTRITION SECTION
             ================================================= */
-
 
             document.getElementById(
                 "nutritionCalories"
@@ -683,7 +680,7 @@ analyzeButton.addEventListener(
 
 
             /* =================================================
-               HEALTH
+               HEALTH BENEFITS
             ================================================= */
 
             showFruitBenefits(
@@ -701,7 +698,7 @@ analyzeButton.addEventListener(
 
 
             /* =================================================
-               SCROLL
+               SCROLL TO ANALYSIS
             ================================================= */
 
             document
@@ -733,15 +730,18 @@ analyzeButton.addEventListener(
             analyzeButton.disabled =
                 false;
 
+
             document.getElementById(
                 "analyzeText"
             ).innerText =
                 "Analyze Fruit";
 
+
             document.getElementById(
                 "analyzeIcon"
             ).innerText =
                 "🤖";
+
 
             loadingStatus.style.display =
                 "none";
@@ -753,13 +753,12 @@ analyzeButton.addEventListener(
 
 
 /* =====================================================
-   SHOW BENEFITS
+   HEALTH BENEFITS
 ===================================================== */
 
 function showFruitBenefits(
     fruitName
 ) {
-
 
     const container =
         document.getElementById(
@@ -776,7 +775,6 @@ function showFruitBenefits(
     if (!data) {
 
         container.innerHTML =
-
             "<p>Information not available.</p>";
 
         return;
@@ -789,7 +787,6 @@ function showFruitBenefits(
 
     data.benefits.forEach(
         function (benefit) {
-
 
             const card =
                 document.createElement(
@@ -849,8 +846,10 @@ function showFruitBenefits(
                     "li"
                 );
 
+
             li.innerText =
                 tip;
+
 
             tipsList.appendChild(
                 li
@@ -869,7 +868,6 @@ function showFruitBenefits(
 function createAISummary(
     data
 ) {
-
 
     const message =
         document.getElementById(
@@ -903,10 +901,19 @@ function createAISummary(
 
     }
 
-    else {
+    else if (
+        quality === "poor"
+    ) {
 
         qualityMessage =
             "The image has been classified with a poor visual quality level. Further physical inspection is recommended.";
+
+    }
+
+    else {
+
+        qualityMessage =
+            "Visual quality assessment is not available.";
 
     }
 
@@ -940,6 +947,18 @@ function createAISummary(
         confidence.
 
         ${qualityMessage}
+
+        The visual defect status is
+
+        <strong>
+            ${data.defect_status}
+        </strong>.
+
+        The AI consumption recommendation is
+
+        <strong>
+            ${data.recommendation}
+        </strong>.
 
     `;
 
@@ -977,6 +996,26 @@ resetButton.addEventListener(
 
         document.getElementById(
             "qualityConfidence"
+        ).innerText =
+            "—";
+
+
+        /* =================================================
+           DEFECT STATUS RESET
+        ================================================= */
+
+        document.getElementById(
+            "defectStatus"
+        ).innerText =
+            "—";
+
+
+        /* =================================================
+           RECOMMENDATION RESET
+        ================================================= */
+
+        document.getElementById(
+            "recommendation"
         ).innerText =
             "—";
 
@@ -1044,7 +1083,6 @@ resetButton.addEventListener(
         document.getElementById(
             "healthSummary"
         ).innerText =
-
             "Analyze a fruit to see nutritional and health information.";
 
 
